@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Persetujuan Penggunaan Foto Anak - Portal Sekolah</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        school: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        #signatureCanvas { touch-action: none; cursor: crosshair; }
+        .custom-radio:checked + label { border-color: #0284c7; background-color: #f0f9ff; }
+        .custom-radio:checked + label .radio-circle { border-color: #0284c7; background-color: #0284c7; }
+        .custom-radio:checked + label .radio-inner-dot { opacity: 1; }
+    </style>
+</head>
+<body class="min-h-full flex flex-col justify-between bg-slate-100 text-slate-800 antialiased">
+
+    <!-- Header Utility -->
+    <header class="bg-slate-900 text-slate-200 text-xs py-2 px-4 shadow-sm flex justify-between items-center z-30">
+        <div class="flex items-center gap-2">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="font-medium text-slate-300">Sistem Digitalisasi Sekolah</span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="grow py-6 sm:py-10 px-3 sm:px-6 flex justify-center items-start">
+        <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl border border-slate-200/80 overflow-hidden">
+
+            <!-- School Header -->
+            <div class="bg-gradient-to-r from-school-900 via-school-800 to-school-700 text-white p-6 sm:p-8">
+                <div class="flex flex-col sm:flex-row items-center text-center sm:text-left gap-4">
+                    <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center shrink-0 border border-white/20">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="inline-block text-xs uppercase tracking-wider font-semibold text-school-100 bg-white/10 px-2.5 py-0.5 rounded-full mb-1">
+                            AIM GreenLab School
+                        </span>
+                        <h1 class="text-2xl sm:text-3xl font-bold text-white">
+                            Persetujuan Penggunaan Foto Anak
+                        </h1>
+                        <p class="text-xs sm:text-sm text-school-100/90 mt-1">
+                            Portal Resmi Dokumentasi Digital Orang Tua / Wali
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Container -->
+            <div id="formView" class="p-5 sm:p-8 space-y-8">
+                <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 text-slate-700 text-sm space-y-2">
+                    <p>Formulir ini digunakan untuk memperoleh persetujuan orang tua/wali terkait penggunaan foto atau dokumentasi peserta didik dalam media sosial, website, dan media publikasi resmi sekolah.</p>
+                    <p class="text-xs text-slate-500 font-medium pt-1 border-t border-slate-200">Silakan isi data berikut dengan benar dan pilih salah satu pilihan persetujuan.</p>
+                </div>
+
+                <form id="consentForm" onsubmit="handleFormSubmit(event)" class="space-y-8" novalidate>
+                    <!-- Data Orang Tua/Anak -->
+                    <div class="space-y-4">
+                        <h2 class="text-lg font-bold text-slate-900 border-b pb-2">1. Data Orang Tua dan Anak</h2>
+                        <div>
+                            <label for="studentName" class="block text-sm font-semibold mb-1">Nama Anak <span class="text-red-500">*</span></label>
+                            <input type="text" id="studentName" name="student_name" placeholder="Masukkan nama lengkap anak" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-school-600 outline-none text-sm" required>
+                            <p id="studentNameError" class="hidden text-xs text-red-600 mt-1">Nama anak wajib diisi.</p>
+                        </div>
+                        <div>
+                            <label for="parentName" class="block text-sm font-semibold mb-1">Nama Orang Tua/Wali <span class="text-red-500">*</span></label>
+                            <input type="text" id="parentName" name="parent_name" placeholder="Masukkan nama lengkap orang tua/wali" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-school-600 outline-none text-sm" required>
+                            <p id="parentNameError" class="hidden text-xs text-red-600 mt-1">Nama orang tua/wali wajib diisi.</p>
+                        </div>
+                        <div>
+                            <label for="parentEmail" class="block text-sm font-semibold mb-1">Email Orang Tua/Wali <span class="text-red-500">*</span></label>
+                            <input type="email" id="parentEmail" name="parent_email" placeholder="contoh@email.com" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-school-600 outline-none text-sm" required>
+                            <p class="text-xs text-slate-500 mt-1">Email digunakan untuk mengirimkan salinan hasil persetujuan.</p>
+                            <p id="parentEmailError" class="hidden text-xs text-red-600 mt-1">Masukkan alamat email yang valid.</p>
+                        </div>
+                    </div>
+
+                    <!-- Pilihan Persetujuan -->
+                    <div class="space-y-4">
+                        <h2 class="text-lg font-bold text-slate-900 border-b pb-2">2. Pilihan Persetujuan</h2>
+                        <div class="space-y-3">
+                            <div class="relative">
+                                <input type="radio" id="consentAgree" name="consent" value="SETUJU" class="sr-only custom-radio">
+                                <label for="consentAgree" class="flex items-start gap-3.5 p-4 rounded-xl border-2 border-slate-200 bg-white cursor-pointer select-none">
+                                    <div class="w-5 h-5 rounded-full border-2 border-slate-400 flex items-center justify-center mt-0.5 shrink-0 radio-circle">
+                                        <div class="w-2 h-2 rounded-full bg-white opacity-0 radio-inner-dot"></div>
+                                    </div>
+                                    <div>
+                                        <span class="font-bold text-brand-700 block text-sm">○ SETUJU</span>
+                                        <p class="text-xs text-slate-600 mt-1">Saya memberikan persetujuan kepada sekolah untuk menggunakan foto/dokumentasi anak saya dalam media sosial, website, dan media publikasi resmi sekolah.</p>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="relative">
+                                <input type="radio" id="consentDisagree" name="consent" value="TIDAK SETUJU" class="sr-only custom-radio">
+                                <label for="consentDisagree" class="flex items-start gap-3.5 p-4 rounded-xl border-2 border-slate-200 bg-white cursor-pointer select-none">
+                                    <div class="w-5 h-5 rounded-full border-2 border-slate-400 flex items-center justify-center mt-0.5 shrink-0 radio-circle">
+                                        <div class="w-2 h-2 rounded-full bg-white opacity-0 radio-inner-dot"></div>
+                                    </div>
+                                    <div>
+                                        <span class="font-bold text-rose-700 block text-sm">○ TIDAK SETUJU</span>
+                                        <p class="text-xs text-slate-600 mt-1">Saya tidak memberikan persetujuan kepada sekolah untuk menggunakan foto/dokumentasi anak saya dalam media sosial, website, dan media publikasi resmi sekolah.</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <p id="consentError" class="hidden text-xs text-red-600 mt-1">Silakan pilih SETUJU atau TIDAK SETUJU.</p>
+                    </div>
+
+                    <!-- Tanda Tangan -->
+                    <div class="space-y-3">
+                        <h2 class="text-lg font-bold text-slate-900 border-b pb-2">3. Tanda Tangan Orang Tua/Wali</h2>
+                        <p class="text-xs text-slate-600">Silakan buat tanda tangan pada area di bawah menggunakan mouse, touchscreen, atau stylus.</p>
+                        <div class="relative w-full rounded-2xl border-2 border-dashed border-slate-300 bg-white overflow-hidden">
+                            <canvas id="signatureCanvas" class="w-full h-44 bg-white block"></canvas>
+                            <div id="signaturePlaceholder" class="absolute inset-0 pointer-events-none flex items-center justify-center text-slate-300 text-sm">
+                                <span class="bg-slate-50 px-3 py-1 rounded-full border">Area Tanda Tangan</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-2">
+                            <button type="button" onclick="clearSignature()" class="px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-medium">Hapus / Ulangi</button>
+                            <button type="button" onclick="clearSignature()" class="px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-medium">Bersihkan</button>
+                        </div>
+                        <p id="signatureError" class="hidden text-xs text-red-600">Silakan buat tanda tangan terlebih dahulu.</p>
+                    </div>
+
+                    <!-- Pernyataan Checkbox -->
+                    <div class="space-y-2">
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox" id="finalDeclaration" class="w-5 h-5 rounded border-slate-300 text-school-600 focus:ring-school-600 mt-0.5 shrink-0">
+                                <span class="text-xs text-slate-700 font-medium leading-relaxed">Saya menyatakan bahwa data yang saya isi benar dan pilihan persetujuan yang saya berikan merupakan keputusan saya sebagai orang tua/wali.</span>
+                            </label>
+                        </div>
+                        <p id="declarationError" class="hidden text-xs text-red-600">Silakan centang pernyataan sebelum mengirim.</p>
+                    </div>
+
+                    <!-- Error Banner -->
+                    <div id="serverErrorBanner" class="hidden p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+                        <span id="serverErrorMessage">Formulir belum berhasil dikirim. Silakan coba kembali.</span>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="submitBtn" class="w-full py-4 px-6 bg-school-600 hover:bg-school-700 text-white font-bold rounded-xl shadow-lg transition">
+                        <span id="submitBtnText">Kirim Persetujuan</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Success Page -->
+            <div id="successView" class="hidden p-8 text-center space-y-6">
+                <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <h2 class="text-2xl font-extrabold text-slate-900">Persetujuan Berhasil Dikirim</h2>
+                <p class="text-sm text-slate-600">Formulir persetujuan Anda telah berhasil dikirim kepada sekolah.</p>
+                <p class="text-xs text-emerald-700 bg-emerald-50 p-3 rounded-xl border border-emerald-200">📧 Salinan hasil persetujuan juga telah dikirim ke email yang Anda masukkan.</p>
+                
+                <div class="bg-slate-50 rounded-xl p-4 border text-left text-xs space-y-2 max-w-sm mx-auto">
+                    <div class="flex justify-between"><span class="text-slate-500">Nomor Formulir:</span><span id="resFormId" class="font-bold font-mono">PPF-20261001-0001</span></div>
+                    <div class="flex justify-between"><span class="text-slate-500">Tanggal:</span><span id="resDate" class="font-medium">1 Oktober 2026</span></div>
+                    <div class="flex justify-between"><span class="text-slate-500">Pilihan:</span><span id="resConsentBadge" class="font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">SETUJU</span></div>
+                </div>
+
+                <button type="button" onclick="resetFormToHome()" class="px-6 py-3 bg-slate-900 text-white text-xs font-semibold rounded-xl">Kembali ke Beranda</button>
+            </div>
+
+            <div class="bg-slate-50 px-6 py-4 border-t text-center text-xs text-slate-500">
+                &copy; <span id="currentYear">2026</span> AIM GreenLab School. All rights reserved.
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Canvas Setup
+        const canvas = document.getElementById('signatureCanvas');
+        const ctx = canvas.getContext('2d');
+        const placeholder = document.getElementById('signaturePlaceholder');
+        let isDrawing = false, hasSigned = false, lastX = 0, lastY = 0;
+
+        function initCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, rect.width, rect.height);
+        }
+
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const pos = getPos(e);
+            lastX = pos.x; lastY = pos.y;
+            placeholder.classList.add('hidden');
+            document.getElementById('signatureError').classList.add('hidden');
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            const pos = getPos(e);
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            lastX = pos.x; lastY = pos.y;
+            hasSigned = true;
+        }
+
+        function stopDrawing() { isDrawing = false; }
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('touchstart', (e) => startDrawing(e), { passive: false });
+        canvas.addEventListener('touchmove', (e) => draw(e), { passive: false });
+        canvas.addEventListener('touchend', stopDrawing);
+
+        function clearSignature() {
+            const rect = canvas.getBoundingClientRect();
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, rect.width, rect.height);
+            hasSigned = false;
+            placeholder.classList.remove('hidden');
+        }
+
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).toLowerCase());
+        }
+
+        // --- PENTING: LOKASI VARIABLE URL BACKEND ---
+        // Catatan: Setelah Anda mendeploy Backend ke Render.com,
+        // Ganti 'http://localhost:5000/api/consent' di bawah menjadi URL Render Anda!
+        const BACKEND_API_URL = "http://localhost:5000/api/consent";
+
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            let isValid = true;
+            const studentName = document.getElementById('studentName').value.trim();
+            const parentName = document.getElementById('parentName').value.trim();
+            const parentEmail = document.getElementById('parentEmail').value.trim();
+            const consentSelected = document.querySelector('input[name="consent"]:checked');
+            const finalDeclaration = document.getElementById('finalDeclaration').checked;
+
+            if (!studentName) { document.getElementById('studentNameError').classList.remove('hidden'); isValid = false; }
+            if (!parentName) { document.getElementById('parentNameError').classList.remove('hidden'); isValid = false; }
+            if (!parentEmail || !validateEmail(parentEmail)) { document.getElementById('parentEmailError').classList.remove('hidden'); isValid = false; }
+            if (!consentSelected) { document.getElementById('consentError').classList.remove('hidden'); isValid = false; }
+            if (!hasSigned) { document.getElementById('signatureError').classList.remove('hidden'); isValid = false; }
+            if (!finalDeclaration) { document.getElementById('declarationError').classList.remove('hidden'); isValid = false; }
+
+            if (!isValid) return;
+
+            const submitBtn = document.getElementById('submitBtn');
+            const submitBtnText = document.getElementById('submitBtnText');
+            submitBtn.disabled = true;
+            submitBtnText.textContent = "Mengirim persetujuan...";
+
+            const payload = {
+                student_name: studentName,
+                parent_name: parentName,
+                parent_email: parentEmail,
+                consent: consentSelected.value,
+                signature: canvas.toDataURL('image/png'),
+                submitted_at: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch(BACKEND_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('resFormId').textContent = result.form_id;
+                    document.getElementById('resDate').textContent = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+                    document.getElementById('resConsentBadge').textContent = payload.consent;
+                    
+                    document.getElementById('formView').classList.add('hidden');
+                    document.getElementById('successView').classList.remove('hidden');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    throw new Error(result.message || 'Formulir belum berhasil dikirim.');
+                }
+            } catch (err) {
+                document.getElementById('serverErrorMessage').textContent = err.message || 'Formulir belum berhasil dikirim. Silakan coba kembali.';
+                document.getElementById('serverErrorBanner').classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtnText.textContent = "Kirim Persetujuan";
+            }
+        }
+
+        function resetFormToHome() {
+            document.getElementById('consentForm').reset();
+            clearSignature();
+            document.getElementById('successView').classList.add('hidden');
+            document.getElementById('formView').classList.remove('hidden');
+        }
+
+        window.onload = initCanvas;
+        window.onresize = initCanvas;
+    </script>
+</body>
+</html>
